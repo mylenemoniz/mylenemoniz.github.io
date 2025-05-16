@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Book Ban Categories</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+      }
+      .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgba(54, 162, 235, 1);
+      }
+      .chartMenu p {
+        padding: 10px;
+        font-size: 20px;
+      }
+      .chartCard {
+        width: 100vw;
+        height: calc(100vh - 40px);
+        background: rgba(54, 162, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .chartBox {
+        width: 700px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="chartMenu">
+      <p>WWW.CHARTJS3.COM (Chart JS <span id="chartVersion"></span>)</p>
+    </div>
+    <div class="chartCard">
+      <div class="chartBox">
+        <canvas id="myChart"></canvas>
+      </div>
+    </div>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+    <script>
+
+    const data = {
+
+ 
+      datasets: [{
+        label: 'Where Books are Being Banned',
+        data: [ 
+          {days : 'Libraries + Classrooms', products: {sales: 184, link: 'https://pen.org/report/banned-in-the-usa-rising-bans-threaten-1a/'} },
+          {days : 'Libraries', products: {sales: 197, link: 'https://pen.org/report/banned-in-the-usa-rising-bans-threaten-1a/'} },
+          {days : 'Classrooms', products: {sales: 474, link: 'https://pen.org/report/banned-in-the-usa-rising-bans-threaten-1a/'} },
+          {days : 'Pending', products: {sales: 731, link: 'https://pen.org/report/banned-in-the-usa-rising-bans-threaten-1a/'} },
+          
+        ],
+
+
+        backgroundColor: [
+          'rgba(14, 42, 22, 0.8)',
+          'rgba(47, 90, 46, 0.88)',
+          'rgba(255, 206, 86, 0.2)',
+          'rgba(75, 192, 192, 0.2)',
+          'rgba(153, 102, 255, 0.2)',
+          'rgba(255, 159, 64, 0.2)',
+          'rgba(0, 0, 0, 0.2)'
+        ],
+        borderColor: [
+          'rgba(6, 6, 6, 1)',
+          'rgba(18, 35, 18, 0.88)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+          'rgba(0, 0, 0, 1)'
+        ],
+        borderWidth: 3
+      }]
+    };
+
+  
+    const config = {
+      type: 'bar',
+      data,
+      options: {
+        parsing: {
+            xAxisKey: 'days',
+            yAxisKey: 'products.sales'
+        },
+        plugins: {
+      legend: {
+        labels: {
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.datasets.length) {
+              return data.datasets.map((dataset, i) => ({
+                text: dataset.label, // keep the label
+                fillStyle: 'transparent', // make the box transparent
+                strokeStyle: 'transparent', // no border
+                lineWidth: 0,
+                hidden: !chart.isDatasetVisible(i),
+                index: i
+              }));
+            }
+            return [];
+          }
+        }
+      }
+    },
+        scales: {
+          y: {
+            beginAtZero: true,
+            
+          }
+        }
+      }
+    };
+
+  
+    const ctx = document.getElementById('myChart');
+
+    const myChart = new Chart(
+      ctx,
+      config
+    );
+
+    function clickHandler (click) {
+        const points = myChart.getElementsAtEventForMode(click, 'nearest', 
+        { intersect: true }, true);
+        if (points.length) {
+           const firstPoint = points[0];
+
+            console.log(firstPoint);
+            const value = myChart.data.datasets[firstPoint.datasetIndex].
+            data[firstPoint.index];
+
+            console.log(value.products.link);
+            window.open(value.products.link);
+        }
+    }
+    ctx.onclick = clickHandler;
+ 
+    const chartVersion = document.getElementById('chartVersion');
+    chartVersion.innerText = Chart.version;
+    </script>
+
+  </body>
+</html>
